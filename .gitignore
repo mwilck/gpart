@@ -1,3 +1,7 @@
+*~
+src/#*
+cscope.out
+cscope.files
 *.o
 src/gpart
 Makefile
