@@ -165,6 +165,17 @@ ssize_t bread(int fd,byte_t *buf,size_t ssize,size_t nsecs)
 {
 	ssize_t		cs = 0, nr = 0;
 
+	nr = read(fd, buf, ssize*nsecs);
+	if (nr == ssize*nsecs)
+		return (nr);
+
+	/* Fall back to small reads in case of error or short read */
+	nsecs -= nr / ssize;
+	cs = (nr / ssize) * ssize;
+	buf += cs;
+	if (nr % ssize)
+		l64seek(fd, -nr % ssize, SEEK_CUR);
+
 	for ( ; nsecs > 0; nsecs--)
 	{
 		if ((nr = read(fd,buf,ssize)) == -1)
